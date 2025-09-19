@@ -1,68 +1,238 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    /* Core colors - Amor AI Health Platform */
+    --background: 0 0% 100%;
+    --foreground: 220 13% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 18%;
+    --primary: 330 81% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 315 20% 96%;
+    --secondary-foreground: 220 13% 18%;
+    --muted: 315 20% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 315 65% 75%;
+    --accent-foreground: 220 13% 18%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 315 30% 90%;
+    --input: 315 30% 90%;
+    --ring: 330 81% 60%;
+
+    /* Amor AI Brand System - Purple-Red Theme */
+    --amor-primary: 330 81% 60%;        /* #C71585 - Main brand color */
+    --amor-primary-hover: 330 81% 55%;  /* Darker on hover */
+    --amor-secondary: 315 65% 75%;      /* #D870AD - Secondary accent */
+    --amor-accent: 315 30% 94%;         /* #F8E6EF - Light background */
+    --amor-background: 0 0% 100%;       /* Pure white */
+    --amor-surface: 315 20% 96%;        /* #F5F5F5 - Light surface */
+
+    /* Text Colors for Optimal Contrast */
+    --amor-text-primary: 220 13% 20%;   /* #333333 - Dark gray for headings */
+    --amor-text-secondary: 215 16% 40%; /* #666666 - Medium gray for body */
+    --amor-text-muted: 210 14% 58%;     /* #999999 - Light gray for hints */
+
+    /* Functional Colors */
+    --amor-border: 315 30% 88%;         /* #E6B3CC - Light purple border */
+    --amor-border-hover: 330 81% 60%;   /* Primary color for active borders */
+    --amor-shadow: 330 81% 60%;         /* Shadow with brand color */
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--amor-primary)), hsl(var(--amor-secondary)));
+    --gradient-surface: linear-gradient(180deg, hsl(var(--amor-background)), hsl(var(--amor-accent)));
+    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,230,239,0.4));
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  a:hover {
-    color: #747bff;
+
+  .dark {
+    --background: 220 15% 8%;
+    --foreground: 210 40% 98%;
+    --card: 220 13% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 13% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 330 75% 65%;
+    --primary-foreground: 220 15% 8%;
+    --secondary: 220 13% 15%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 220 13% 15%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 315 55% 45%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 330 75% 65%;
+
+    /* Amor AI Dark Theme */
+    --amor-primary: 330 75% 65%;        /* Lighter purple-red for dark mode */
+    --amor-primary-hover: 330 75% 70%;  /* Even lighter on hover */
+    --amor-secondary: 315 60% 70%;      /* Adjusted secondary */
+    --amor-accent: 315 25% 15%;         /* Dark background accent */
+    --amor-background: 220 15% 8%;      /* Dark background */
+    --amor-surface: 220 13% 12%;        /* Dark surface */
+
+    /* Dark mode text with high contrast */
+    --amor-text-primary: 210 40% 95%;   /* Light text for dark bg */
+    --amor-text-secondary: 215 20% 75%; /* Medium light text */
+    --amor-text-muted: 210 16% 65%;     /* Muted light text */
+
+    --amor-border: 220 13% 20%;         /* Dark border */
+    --amor-border-hover: 330 75% 65%;   /* Primary for active */
+    --amor-shadow: 330 75% 25%;         /* Darker shadow */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Mobile-first responsive utilities */
+@layer components {
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .mobile-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Safe area handling for mobile */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Amor AI Brand Components - Following Design System */
+
+  /* Primary Action Button */
+  .amor-button {
+    @apply bg-[hsl(var(--amor-primary))] text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[hsl(var(--amor-primary-hover))];
+    border: 2px solid transparent;
+  }
+
+  .amor-button:hover {
+    border-color: hsl(var(--amor-background));
+  }
+
+  /* Search Input with Brand Styling */
+  .amor-search-input {
+    @apply bg-[hsl(var(--amor-accent))] border-[hsl(var(--amor-border))] text-[hsl(var(--amor-text-primary))] placeholder:text-[hsl(var(--amor-text-muted))] focus:border-[hsl(var(--amor-primary))] focus:ring-2 focus:ring-[hsl(var(--amor-primary))]/20;
+  }
+
+  /* Card Components */
+  .amor-card {
+    @apply bg-white border border-[hsl(var(--amor-border))] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+
+  .amor-card:hover {
+    border-color: hsl(var(--amor-primary));
+    box-shadow: 0 10px 30px -5px hsl(var(--amor-shadow) / 0.2);
+  }
+
+  /* Typography Classes for Design System */
+  .amor-heading-1 {
+    @apply text-2xl md:text-4xl lg:text-5xl font-bold text-[hsl(var(--amor-primary))] leading-tight;
+  }
+
+  .amor-heading-2 {
+    @apply text-xl md:text-2xl lg:text-3xl font-semibold text-[hsl(var(--amor-primary))] leading-snug;
+  }
+
+  .amor-text-primary {
+    @apply text-[hsl(var(--amor-text-primary))] font-normal;
+  }
+
+  .amor-text-secondary {
+    @apply text-[hsl(var(--amor-text-secondary))] font-normal;
+  }
+
+  .amor-text-muted {
+    @apply text-[hsl(var(--amor-text-muted))] text-sm;
+  }
+
+  /* Voice Search Button */
+  .amor-voice-button {
+    @apply bg-[hsl(var(--amor-primary))] text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110;
+  }
+
+  /* Gradient Text */
+  .amor-gradient-text {
+    @apply bg-gradient-to-r from-[hsl(var(--amor-primary))] to-[hsl(var(--amor-secondary))] bg-clip-text text-transparent font-bold;
+  }
+
+  /* Mobile-optimized animations */
+  .mobile-fade-in {
+    @apply animate-fade-in;
+  }
+
+  .mobile-slide-up {
+    @apply animate-slide-up;
+  }
+
+  /* Responsive grid utilities */
+  .mobile-grid {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .mobile-flex {
+    @apply flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4;
   }
 }
