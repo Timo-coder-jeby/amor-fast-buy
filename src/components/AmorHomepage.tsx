@@ -382,9 +382,9 @@ const AmorHomepage = () => {
           {/* Gift Box Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {giftBoxes.map((box) => (
-              <div key={box.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <div key={box.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-pink-500">
                 {/* Image Section */}
-                <div className="relative">
+                <div className="relative overflow-hidden">
                   {/* Match Rate Badge */}
                   <div className="absolute top-4 left-4 z-10">
                     <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -394,7 +394,7 @@ const AmorHomepage = () => {
 
                   {/* Discount Badge */}
                   <div className="absolute top-4 right-4 z-10">
-                    <span className="bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                    <span className="bg-gradient-to-r from-pink-500 to-[#de86cc] text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 shadow-lg">
                       <Gift className="w-3 h-3" />
                       {box.discount}
                     </span>
@@ -403,32 +403,41 @@ const AmorHomepage = () => {
                   {/* Gift Box Image */}
                   <div className="h-64 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-pink-100/30 to-purple-100/30"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      {box.id === 1 && (
-                        <div className="w-40 h-32 bg-red-600 rounded-lg relative transform rotate-3">
+
+                    {/* Gradient Mask from bottom to top on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+
+                    {/* Gift box icons container - scale on hover without affecting layout */}
+                    {box.id === 1 && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-40 h-32 bg-red-600 rounded-lg relative transform rotate-3 transition-transform duration-300 group-hover:scale-110">
                           <div className="absolute inset-2 bg-red-700 rounded"></div>
                           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-full bg-yellow-400"></div>
                           <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full h-8 bg-yellow-400"></div>
                         </div>
-                      )}
-                      {box.id === 2 && (
-                        <div className="w-32 h-32 bg-yellow-500 rounded-lg relative">
+                      </div>
+                    )}
+                    {box.id === 2 && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-32 h-32 bg-yellow-500 rounded-lg relative transition-transform duration-300 group-hover:scale-110">
                           <div className="absolute inset-2 bg-yellow-600 rounded"></div>
                           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-full bg-orange-400"></div>
                           <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full h-6 bg-orange-400"></div>
                           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-red-500 rounded-full"></div>
                         </div>
-                      )}
-                      {box.id === 3 && (
-                        <div className="w-36 h-28 bg-gray-200 rounded-lg relative">
+                      </div>
+                    )}
+                    {box.id === 3 && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-36 h-28 bg-gray-200 rounded-lg relative transition-transform duration-300 group-hover:scale-110">
                           <div className="absolute inset-2 bg-gray-300 rounded"></div>
                           <div className="absolute top-2 left-2 right-2 h-8 bg-white rounded flex items-center justify-center">
                             <span className="text-xs font-medium text-gray-600">holiday</span>
                           </div>
                           <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-12 h-6 bg-gray-400 rounded-t"></div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Feature Badge */}
@@ -441,7 +450,7 @@ const AmorHomepage = () => {
 
                 {/* Content Section */}
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{box.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-pink-500 mb-3 transition-colors duration-300">{box.title}</h3>
                   <p className="text-sm text-gray-600 mb-4 leading-relaxed">{box.description}</p>
 
                   {/* Features */}
