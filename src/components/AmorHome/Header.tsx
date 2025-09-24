@@ -11,7 +11,7 @@ const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="text-3xl font-bold text-pink-500">Amor</div>
+            <div className="text-2xl sm:text-3xl font-bold amor-gradient-text">Amor</div>
             <div className="text-sm text-gray-500 hidden sm:block">Trusted Health Products</div>
           </div>
           <div className="flex-1 max-w-2xl mx-8 hidden md:block">

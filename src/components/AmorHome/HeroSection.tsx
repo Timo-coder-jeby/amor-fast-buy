@@ -13,7 +13,7 @@ const HeroSection = ({
   searchSuggestions
 }: HeroSectionProps) => {
   return (
-    <section className="bg-gradient-to-br from-pink-400 via-pink-500 to-pink-600 text-white py-16 lg:py-24">
+    <section className="bg-gradient-to-br from-[hsl(var(--amor-primary))] to-[hsl(var(--amor-secondary))] text-white py-12 lg:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center space-y-8">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
