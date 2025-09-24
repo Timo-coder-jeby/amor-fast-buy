@@ -1,4 +1,5 @@
 import { Star, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Product {
   id: number;
@@ -22,6 +23,12 @@ interface GoldenThreeSectionProps {
 }
 
 const GoldenThreeSection = ({ products }: GoldenThreeSectionProps) => {
+  const navigate = useNavigate();
+
+  const handleProductClick = (productId: number) => {
+    navigate(`/detail/${productId}`);
+  };
+
   return (
     <section className="py-16 lg:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
@@ -37,7 +44,11 @@ const GoldenThreeSection = ({ products }: GoldenThreeSectionProps) => {
         </div>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {products.map((product) => (
-            <div key={product.id} className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 hover:shadow-xl">
+            <div
+              key={product.id}
+              className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 hover:shadow-xl cursor-pointer"
+              onClick={() => handleProductClick(product.id)}
+            >
               <div className="relative p-4 pb-2">
                 <div className="flex justify-between items-center mb-3">
                   <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">{product.matchRate}</span>
@@ -74,10 +85,22 @@ const GoldenThreeSection = ({ products }: GoldenThreeSectionProps) => {
                   <div className="text-sm text-blue-800">{product.reason}</div>
                 </div>
                 <div className="space-y-2">
-                  <button className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg font-medium transition-colors">
+                  <button
+                    className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // 这里可以添加主要按钮的逻辑
+                    }}
+                  >
                     {product.primaryButton}
                   </button>
-                  <button className="w-full border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                  <button
+                    className="w-full border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // 这里可以添加外部链接的逻辑
+                    }}
+                  >
                     <ExternalLink className="w-4 h-4" />
                     {product.secondaryButton}
                   </button>
