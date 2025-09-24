@@ -8,6 +8,10 @@ const routes = [
 		component: lazy(() => import("@/pages/index")),
 	},
 	{
+		path: "/detail/:id",
+		component: lazy(() => import("@/pages/detail")),
+	},
+	{
 		path: "*",
 		component: lazy(() => import("@/pages/notFound")),
 	},
