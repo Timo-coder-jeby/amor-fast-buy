@@ -4,7 +4,7 @@ import React, { Suspense, lazy } from "react";
 // 路由配置数组
 const routes = [
 	{
-		path: "/",
+		path: "/amor-fast-buy/",
 		component: lazy(() => import("@/pages/index")),
 	},
 	{
