@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route,Navigate } from "react-router-dom";
 import React, { Suspense, lazy } from "react";
 
 // 路由配置数组
 const routes = [
 	{
-		path: "/amor-fast-buy/",
+		path: "/amor-fast-buy",
 		component: lazy(() => import("@/pages/index")),
 	},
 	{
@@ -13,7 +13,8 @@ const routes = [
 	},
 	{
 		path: "*",
-		component: lazy(() => import("@/pages/notFound")),
+		// component: lazy(() => import("@/pages/notFound")),
+		component: () => <Navigate  to={`amor-fast-buy`} replace />,
 	},
 ];
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog } from "radix-ui";
 import Header from "@/components/AmorHome/Header";
 import HeroSection from "@/components/AmorHome/HeroSection";
@@ -13,6 +13,10 @@ import VoiceDialog from "@/components/AmorHome/VoiceDialog";
 const AmorHomepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showVoiceDialog, setShowVoiceDialog] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [showHeaderSearch, setShowHeaderSearch] = useState(false);
+  const goldenThreeRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLDivElement>(null);
 
   const searchSuggestions = [
     "Vitamin D supplements",
@@ -159,21 +163,69 @@ const AmorHomepage = () => {
     }
   ];
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      setIsSearchActive(true);
+      setShowHeaderSearch(true);
+      // 缩短动画时间，让滚动更快开始
+      setTimeout(() => {
+        goldenThreeRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 200); // 调整为200ms
+    }
+  };
+
+  // 监听滚动事件
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroSectionRef.current) {
+        const heroBottom = heroSectionRef.current.getBoundingClientRect().bottom;
+        // 如果HeroSection已经滚动出视野（底部在视口顶部以上）
+        if (heroBottom <= 100) {
+          setShowHeaderSearch(true);
+          if (!isSearchActive) {
+            setIsSearchActive(true);
+          }
+        } else {
+          // 如果HeroSection在视野中
+          setShowHeaderSearch(false);
+          setIsSearchActive(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // 初始检查
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isSearchActive]);
+
   return (
     <Dialog.Root open={showVoiceDialog} onOpenChange={setShowVoiceDialog}>
       <div className="min-h-screen bg-white">
         <Header
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          onSearch={handleSearch}
+          showSearch={showHeaderSearch}
         />
 
-        <HeroSection
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          searchSuggestions={searchSuggestions}
-        />
+        <div ref={heroSectionRef}>
+          <HeroSection
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            searchSuggestions={searchSuggestions}
+            onSearch={handleSearch}
+            isSearchActive={isSearchActive}
+          />
+        </div>
 
-        <GoldenThreeSection products={goldenThreeProducts} />
+        <div ref={goldenThreeRef}>
+          <GoldenThreeSection products={goldenThreeProducts} />
+        </div>
 
         <SectionDivider />
 
