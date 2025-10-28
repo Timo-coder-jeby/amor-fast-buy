@@ -10,6 +10,8 @@ import Footer from "@/components/AmorHome/Footer";
 import ChatWidget from "@/components/AmorHome/ChatWidget";
 import VoiceDialog from "@/components/AmorHome/VoiceDialog";
 
+
+import service from "@service";
 const AmorHomepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showVoiceDialog, setShowVoiceDialog] = useState(false);
@@ -17,6 +19,13 @@ const AmorHomepage = () => {
   const [showHeaderSearch, setShowHeaderSearch] = useState(false);
   const goldenThreeRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    service.get('/api/products',{page:1,size:10})
+      .then(resp => {
+        console.log('🐭',resp);
+      })
+  }, []);
 
   const searchSuggestions = [
     "Vitamin D supplements",

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PageRoutes from "@/routes";
 
 const queryClient = new QueryClient();
-console.log(queryClient);
+// console.log(queryClient);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
