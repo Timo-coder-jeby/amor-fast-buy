@@ -21,7 +21,7 @@ const AmorHomepage = () => {
   const heroSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    service.get('/api/products/top-selling',{limit: 3})
+    service.get('/api/products/top-selling',{limit: 3},{check: true})
       .then(resp => {
         console.log('🐭',resp);
       })

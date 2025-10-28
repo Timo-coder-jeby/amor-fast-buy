@@ -2,6 +2,11 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { toast } from '@/hooks/use-toast';
 import { getGlobalLoadingManager } from '@/store/loading.tsx';
 
+
+interface RequestConfig extends AxiosRequestConfig {
+  check?: boolean;
+}
+
 class RequestService {
   private instance: AxiosInstance;
 
@@ -29,9 +34,9 @@ class RequestService {
 
     // 响应拦截器
     this.instance.interceptors.response.use(
-      (response) => {
+      ({config,data}:any) => {
         getGlobalLoadingManager().hideLoading();
-        return response?.data;
+        return config?.check ? (data?.data || data) : data;
       },
       (error) => {
         getGlobalLoadingManager().hideLoading();
@@ -45,19 +50,19 @@ class RequestService {
   }
 
 
-  get<T = any>(url: string,params?:any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  get<T = any>(url: string,params?:any, config?: RequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.get<T>(url, {params,...config});
   }
 
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  post<T = any>(url: string, data?: any, config?: RequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.post<T>(url, data, config);
   }
 
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  put<T = any>(url: string, data?: any, config?: RequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.put<T>(url, data, config);
   }
 
-  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  delete<T = any>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.delete<T>(url, config);
   }
 }
