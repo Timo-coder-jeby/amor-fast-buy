@@ -1,64 +1,36 @@
-import React, { createContext, useContext, useState, useCallback,useEffect } from 'react';
+import { create } from 'zustand';
 
-interface LoadingContextType {
-  isLoading: boolean;
+interface LoadingState {
   loadingCount: number;
+  isLoading: boolean;
   showLoading: () => void;
   hideLoading: () => void;
 }
 
-const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
+export const useLoadingStore = create<LoadingState>((set) => ({
+  loadingCount: 0,
+  isLoading: false,
+  showLoading: () =>
+    set((state) => {
+      const newCount = state.loadingCount + 1;
+      return {
+        loadingCount: newCount,
+        isLoading: true,
+      };
+    }),
+  hideLoading: () =>
+    set((state) => {
+      const newCount = Math.max(0, state.loadingCount - 1);
+      return {
+        loadingCount: newCount,
+        isLoading: newCount > 0,
+      };
+    }),
+}));
 
-// 全局 loading 管理器（用于非 React 组件）
-let globalLoadingManager: LoadingContextType | null = null;
-
-export const setGlobalLoadingManager = (manager: LoadingContextType) => {
-  globalLoadingManager = manager;
-};
-
-export const getGlobalLoadingManager = () => {
-  if (!globalLoadingManager) {
-    console.warn('LoadingManager not initialized');
-    return {
-      showLoading: () => {},
-      hideLoading: () => {},
-    };
-  }
-  return globalLoadingManager;
-};
-
-export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [loadingCount, setLoadingCount] = useState(0);
-  const isLoading = loadingCount > 0;
-
-  const showLoading = useCallback(() => {
-    setLoadingCount((prev) => prev + 1);
-  }, []);
-
-  const hideLoading = useCallback(() => {
-    setLoadingCount((prev) => Math.max(0, prev - 1));
-  }, []);
-
-  const value = { isLoading, loadingCount, showLoading, hideLoading };
-
-  // 设置全局管理器
-  useEffect(() => {
-    setGlobalLoadingManager(value);
-  }, [value]);
-
-  return (
-    <LoadingContext.Provider value={value}>
-      {children}
-    </LoadingContext.Provider>
-  );
-};
-
-
-export const useLoading = () => {
-  const context = useContext(LoadingContext);
-  if (!context) {
-    throw new Error('useLoading must be used within LoadingProvider');
-  }
-  return context;
-};
+// 便捷方法供非 React 组件使用
+export const getGlobalLoadingManager = () => ({
+  showLoading: useLoadingStore.getState().showLoading,
+  hideLoading: useLoadingStore.getState().hideLoading,
+});
 

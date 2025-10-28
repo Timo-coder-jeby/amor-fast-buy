@@ -20,7 +20,7 @@ const routes = [
 
 const PageRoutes = () => (
 	<BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-		<Suspense fallback={<div className="flex items-center justify-center min-h-screen">加载中...</div>}>
+		<Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Page...</div>}>
 			<Routes>
 				{routes.map((route, index) => {
 					const Component = route.component;
