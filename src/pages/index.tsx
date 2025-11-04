@@ -20,10 +20,13 @@ const AmorHomepage = () => {
   const goldenThreeRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLDivElement>(null);
 
+  const [goldenThreeProducts,setGoldenThreeProducts] = useState([])
+
   useEffect(() => {
     service.get('/api/products/top-selling',{limit: 3},{check: true})
       .then(resp => {
         console.log('🐭',resp);
+        setGoldenThreeProducts(resp)
       })
   }, []);
 
@@ -34,56 +37,56 @@ const AmorHomepage = () => {
     "Heart health products"
   ];
 
-  const goldenThreeProducts = [
-    {
-      id: 1,
-      matchRate: "96% Match",
-      badge: "Easy to Swallow",
-      badgeColor: "bg-green-500",
-      retailer: "Amazon",
-      title: "Omega-3 Fish Oil Premium 2000mg",
-      rating: 4.8,
-      reviews: "2,341 reviews",
-      price: "$24.99",
-      refPrice: "Ref: $24.99",
-      reason: "Perfect match for your heart health goals and highly rated by seniors",
-      primaryButton: "See Live Price & Details",
-      secondaryButton: "Quick Buy on Amazon",
-      image: "/api/placeholder/200/250"
-    },
-    {
-      id: 2,
-      matchRate: "92% Match",
-      badge: "Large Font Label",
-      badgeColor: "bg-blue-500",
-      retailer: "Walmart",
-      title: "Complete Multivitamin for Seniors 50+",
-      rating: 4.7,
-      reviews: "1,892 reviews",
-      price: "$18.95",
-      refPrice: "Ref: $18.95",
-      reason: "Specially formulated for your age group with easy-to-read packaging",
-      primaryButton: "See Live Price & Details",
-      secondaryButton: "Quick Buy on Walmart",
-      image: "/api/placeholder/200/250"
-    },
-    {
-      id: 3,
-      matchRate: "88% Match",
-      badge: "Trusted Brand",
-      badgeColor: "bg-green-600",
-      retailer: "CVS",
-      title: "CoQ10 Heart Health Support 200mg",
-      rating: 4.9,
-      reviews: "896 reviews",
-      price: "$32.50",
-      refPrice: "Ref: $32.50",
-      reason: "Top-rated cardiovascular support with proven results",
-      primaryButton: "See Live Price & Details",
-      secondaryButton: "Quick Buy on CVS",
-      image: "/api/placeholder/200/250"
-    }
-  ];
+  // const goldenThreeProducts = [
+  //   {
+  //     id: 1,
+  //     matchRate: "96% Match",
+  //     badge: "Easy to Swallow",
+  //     badgeColor: "bg-green-500",
+  //     retailer: "Amazon",
+  //     title: "Omega-3 Fish Oil Premium 2000mg",
+  //     rating: 4.8,
+  //     reviews: "2,341 reviews",
+  //     price: "$24.99",
+  //     refPrice: "Ref: $24.99",
+  //     reason: "Perfect match for your heart health goals and highly rated by seniors",
+  //     primaryButton: "See Live Price & Details",
+  //     secondaryButton: "Quick Buy on Amazon",
+  //     image: "/api/placeholder/200/250"
+  //   },
+  //   {
+  //     id: 2,
+  //     matchRate: "92% Match",
+  //     badge: "Large Font Label",
+  //     badgeColor: "bg-blue-500",
+  //     retailer: "Walmart",
+  //     title: "Complete Multivitamin for Seniors 50+",
+  //     rating: 4.7,
+  //     reviews: "1,892 reviews",
+  //     price: "$18.95",
+  //     refPrice: "Ref: $18.95",
+  //     reason: "Specially formulated for your age group with easy-to-read packaging",
+  //     primaryButton: "See Live Price & Details",
+  //     secondaryButton: "Quick Buy on Walmart",
+  //     image: "/api/placeholder/200/250"
+  //   },
+  //   {
+  //     id: 3,
+  //     matchRate: "88% Match",
+  //     badge: "Trusted Brand",
+  //     badgeColor: "bg-green-600",
+  //     retailer: "CVS",
+  //     title: "CoQ10 Heart Health Support 200mg",
+  //     rating: 4.9,
+  //     reviews: "896 reviews",
+  //     price: "$32.50",
+  //     refPrice: "Ref: $32.50",
+  //     reason: "Top-rated cardiovascular support with proven results",
+  //     primaryButton: "See Live Price & Details",
+  //     secondaryButton: "Quick Buy on CVS",
+  //     image: "/api/placeholder/200/250"
+  //   }
+  // ];
 
   const communityPosts = [
     {
