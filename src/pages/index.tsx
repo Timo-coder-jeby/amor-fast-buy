@@ -11,7 +11,8 @@ import ChatWidget from "@/components/AmorHome/ChatWidget";
 import VoiceDialog from "@/components/AmorHome/VoiceDialog";
 
 
-import service from "@service";
+import { getTopSellingProducts, getGiftBoxes } from "@/service/api";
+
 const AmorHomepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showVoiceDialog, setShowVoiceDialog] = useState(false);
@@ -20,14 +21,23 @@ const AmorHomepage = () => {
   const goldenThreeRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLDivElement>(null);
 
-  const [goldenThreeProducts,setGoldenThreeProducts] = useState([])
+  const [goldenThreeProducts, setGoldenThreeProducts] = useState([]);
+  const [giftBoxes, setGiftBoxes] = useState([]);
 
+  // 初始化数据 - 可以在这里添加多个接口请求
   useEffect(() => {
-    service.get('/api/products/top-selling',{limit: 3},{check: true})
-      .then(resp => {
-        console.log('🐭',resp);
-        setGoldenThreeProducts(resp)
+    Promise.all([
+      getTopSellingProducts(3),
+      getGiftBoxes(),
+      // getCommunityPosts(),
+    ])
+      .then(([productsResp,giftBoxesResp]:any[]) => {
+        setGoldenThreeProducts(productsResp);
+        setGiftBoxes(giftBoxesResp);
       })
+      .catch(error => {
+        console.error('Failed to fetch data:', error);
+      });
   }, []);
 
   const searchSuggestions = [
@@ -103,77 +113,77 @@ const AmorHomepage = () => {
     }
   ];
 
-  const giftBoxes = [
-    {
-      id: 1,
-      matchRate: "92% Match",
-      discount: "30% OFF",
-      badge: "Easy-grip containers",
-      badgeColor: "bg-green-500",
-      title: "Premium Wellness Bundle",
-      description: "Complete health package with premium vitamins, omega-3, probiotics, and wellness journal",
-      features: [
-        "Premium vitamins",
-        "Omega-3 fish oil",
-        "Probiotic complex",
-        "Wellness journal"
-      ],
-      price: "$129.99",
-      originalPrice: "$189.99",
-      savings: "Save $60",
-      primaryButton: "查看详情",
-      freeShipping: true,
-      return30Day: true,
-      expertCurated: true,
-      image: "/api/placeholder/300/250"
-    },
-    {
-      id: 2,
-      matchRate: "78% Match",
-      discount: "25% OFF",
-      badge: "Beginner-friendly",
-      badgeColor: "bg-blue-500",
-      title: "Essential Health Starter",
-      description: "Carefully selected essentials for beginning a health journey with daily multivitamin, vitamin D3, health tracker and nutrition guide",
-      features: [
-        "Daily multivitamin",
-        "Vitamin D3",
-        "Health tracker",
-        "Nutrition guide"
-      ],
-      price: "$89.99",
-      originalPrice: "$129.99",
-      savings: "Save $40",
-      primaryButton: "查看详情",
-      freeShipping: true,
-      return30Day: true,
-      expertCurated: true,
-      image: "/api/placeholder/300/250"
-    },
-    {
-      id: 3,
-      matchRate: "85% Match",
-      discount: "35% OFF",
-      badge: "Senior-tested formula",
-      badgeColor: "bg-green-600",
-      title: "Senior Care Package",
-      description: "Specially formulated for seniors with joint support, heart health, memory support and pill organizer",
-      features: [
-        "Joint support",
-        "Heart health",
-        "Memory support",
-        "Pill organizer"
-      ],
-      price: "$99.99",
-      originalPrice: "$149.99",
-      savings: "Save $50",
-      primaryButton: "查看详情",
-      freeShipping: true,
-      return30Day: true,
-      expertCurated: true,
-      image: "/api/placeholder/300/250"
-    }
-  ];
+  // const giftBoxes = [
+  //   {
+  //     id: 1,
+  //     matchRate: "92% Match",
+  //     discount: "30% OFF",
+  //     badge: "Easy-grip containers",
+  //     badgeColor: "bg-green-500",
+  //     title: "Premium Wellness Bundle",
+  //     description: "Complete health package with premium vitamins, omega-3, probiotics, and wellness journal",
+  //     features: [
+  //       "Premium vitamins",
+  //       "Omega-3 fish oil",
+  //       "Probiotic complex",
+  //       "Wellness journal"
+  //     ],
+  //     price: "$129.99",
+  //     originalPrice: "$189.99",
+  //     savings: "Save $60",
+  //     primaryButton: "查看详情",
+  //     freeShipping: true,
+  //     return30Day: true,
+  //     expertCurated: true,
+  //     image: "/api/placeholder/300/250"
+  //   },
+  //   {
+  //     id: 2,
+  //     matchRate: "78% Match",
+  //     discount: "25% OFF",
+  //     badge: "Beginner-friendly",
+  //     badgeColor: "bg-blue-500",
+  //     title: "Essential Health Starter",
+  //     description: "Carefully selected essentials for beginning a health journey with daily multivitamin, vitamin D3, health tracker and nutrition guide",
+  //     features: [
+  //       "Daily multivitamin",
+  //       "Vitamin D3",
+  //       "Health tracker",
+  //       "Nutrition guide"
+  //     ],
+  //     price: "$89.99",
+  //     originalPrice: "$129.99",
+  //     savings: "Save $40",
+  //     primaryButton: "查看详情",
+  //     freeShipping: true,
+  //     return30Day: true,
+  //     expertCurated: true,
+  //     image: "/api/placeholder/300/250"
+  //   },
+  //   {
+  //     id: 3,
+  //     matchRate: "85% Match",
+  //     discount: "35% OFF",
+  //     badge: "Senior-tested formula",
+  //     badgeColor: "bg-green-600",
+  //     title: "Senior Care Package",
+  //     description: "Specially formulated for seniors with joint support, heart health, memory support and pill organizer",
+  //     features: [
+  //       "Joint support",
+  //       "Heart health",
+  //       "Memory support",
+  //       "Pill organizer"
+  //     ],
+  //     price: "$99.99",
+  //     originalPrice: "$149.99",
+  //     savings: "Save $50",
+  //     primaryButton: "查看详情",
+  //     freeShipping: true,
+  //     return30Day: true,
+  //     expertCurated: true,
+  //     image: "/api/placeholder/300/250"
+  //   }
+  // ];
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -241,7 +251,9 @@ const AmorHomepage = () => {
 
         <SectionDivider />
 
-        <HolidayGiftBoxes giftBoxes={giftBoxes} />
+        <HolidayGiftBoxes
+          giftBoxes={giftBoxes}
+        />
 
         <SectionDivider />
 

@@ -44,3 +44,36 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
 }
+export interface Product {
+  productId: string;
+  title: string;
+  brand: string;
+  originalPrice: number;
+  currentPrice: number;
+  currency: string;
+  mainImageUrl: string;
+  categoryName: string | null;
+  rating: number;
+  reviewsCount: number;
+  availability: string;
+  primeEligible: boolean;
+}
+
+export interface GiftBox {
+  ruleId: string;
+  name: string;
+  description: string;
+  theme: string;
+  totalOriginalPrice: number;
+  totalCurrentPrice: number;
+  currency: string;
+  discountPercentage: number;
+  savedAmount: number;
+  products: Product[];
+  productCount: number;
+  matchPercentage?: number
+}
+
+export interface HolidayGiftBoxesProps {
+  giftBoxes: GiftBox[];
+}
