@@ -9,10 +9,12 @@ import request from '@service';
 
 /**
  * 获取热销产品列表
- * @param limit 获取数量限制
+ * @param size 获取数量限制
+ * @param queryType 查询类型 0 商品 1 热销
+ * @param title
  */
-export const getTopSellingProducts = async (limit: number = 3) => {
-  return request.get('/api/products/top-selling', { limit }, { check: true });
+export const getTopSellingProducts = async (size: number = 3,queryType?: number,title?: string | undefined) => {
+  return request.post('/api/products/list', { size,queryType: queryType ?? 1,title: title || undefined }, { check: true });
 };
 
 /**

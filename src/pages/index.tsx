@@ -24,10 +24,15 @@ const AmorHomepage = () => {
   const [goldenThreeProducts, setGoldenThreeProducts] = useState([]);
   const [giftBoxes, setGiftBoxes] = useState([]);
 
+
+  const getProducts = (limit: number, type?: number, title?: string) => {
+    return getTopSellingProducts(limit, type, title)
+  }
+
   // 初始化数据 - 可以在这里添加多个接口请求
   useEffect(() => {
     Promise.all([
-      getTopSellingProducts(3),
+      getProducts(3),
       getGiftBoxes(),
       // getCommunityPosts(),
     ])
@@ -47,56 +52,6 @@ const AmorHomepage = () => {
     "Heart health products"
   ];
 
-  // const goldenThreeProducts = [
-  //   {
-  //     id: 1,
-  //     matchRate: "96% Match",
-  //     badge: "Easy to Swallow",
-  //     badgeColor: "bg-green-500",
-  //     retailer: "Amazon",
-  //     title: "Omega-3 Fish Oil Premium 2000mg",
-  //     rating: 4.8,
-  //     reviews: "2,341 reviews",
-  //     price: "$24.99",
-  //     refPrice: "Ref: $24.99",
-  //     reason: "Perfect match for your heart health goals and highly rated by seniors",
-  //     primaryButton: "See Live Price & Details",
-  //     secondaryButton: "Quick Buy on Amazon",
-  //     image: "/api/placeholder/200/250"
-  //   },
-  //   {
-  //     id: 2,
-  //     matchRate: "92% Match",
-  //     badge: "Large Font Label",
-  //     badgeColor: "bg-blue-500",
-  //     retailer: "Walmart",
-  //     title: "Complete Multivitamin for Seniors 50+",
-  //     rating: 4.7,
-  //     reviews: "1,892 reviews",
-  //     price: "$18.95",
-  //     refPrice: "Ref: $18.95",
-  //     reason: "Specially formulated for your age group with easy-to-read packaging",
-  //     primaryButton: "See Live Price & Details",
-  //     secondaryButton: "Quick Buy on Walmart",
-  //     image: "/api/placeholder/200/250"
-  //   },
-  //   {
-  //     id: 3,
-  //     matchRate: "88% Match",
-  //     badge: "Trusted Brand",
-  //     badgeColor: "bg-green-600",
-  //     retailer: "CVS",
-  //     title: "CoQ10 Heart Health Support 200mg",
-  //     rating: 4.9,
-  //     reviews: "896 reviews",
-  //     price: "$32.50",
-  //     refPrice: "Ref: $32.50",
-  //     reason: "Top-rated cardiovascular support with proven results",
-  //     primaryButton: "See Live Price & Details",
-  //     secondaryButton: "Quick Buy on CVS",
-  //     image: "/api/placeholder/200/250"
-  //   }
-  // ];
 
   const communityPosts = [
     {
@@ -113,82 +68,21 @@ const AmorHomepage = () => {
     }
   ];
 
-  // const giftBoxes = [
-  //   {
-  //     id: 1,
-  //     matchRate: "92% Match",
-  //     discount: "30% OFF",
-  //     badge: "Easy-grip containers",
-  //     badgeColor: "bg-green-500",
-  //     title: "Premium Wellness Bundle",
-  //     description: "Complete health package with premium vitamins, omega-3, probiotics, and wellness journal",
-  //     features: [
-  //       "Premium vitamins",
-  //       "Omega-3 fish oil",
-  //       "Probiotic complex",
-  //       "Wellness journal"
-  //     ],
-  //     price: "$129.99",
-  //     originalPrice: "$189.99",
-  //     savings: "Save $60",
-  //     primaryButton: "查看详情",
-  //     freeShipping: true,
-  //     return30Day: true,
-  //     expertCurated: true,
-  //     image: "/api/placeholder/300/250"
-  //   },
-  //   {
-  //     id: 2,
-  //     matchRate: "78% Match",
-  //     discount: "25% OFF",
-  //     badge: "Beginner-friendly",
-  //     badgeColor: "bg-blue-500",
-  //     title: "Essential Health Starter",
-  //     description: "Carefully selected essentials for beginning a health journey with daily multivitamin, vitamin D3, health tracker and nutrition guide",
-  //     features: [
-  //       "Daily multivitamin",
-  //       "Vitamin D3",
-  //       "Health tracker",
-  //       "Nutrition guide"
-  //     ],
-  //     price: "$89.99",
-  //     originalPrice: "$129.99",
-  //     savings: "Save $40",
-  //     primaryButton: "查看详情",
-  //     freeShipping: true,
-  //     return30Day: true,
-  //     expertCurated: true,
-  //     image: "/api/placeholder/300/250"
-  //   },
-  //   {
-  //     id: 3,
-  //     matchRate: "85% Match",
-  //     discount: "35% OFF",
-  //     badge: "Senior-tested formula",
-  //     badgeColor: "bg-green-600",
-  //     title: "Senior Care Package",
-  //     description: "Specially formulated for seniors with joint support, heart health, memory support and pill organizer",
-  //     features: [
-  //       "Joint support",
-  //       "Heart health",
-  //       "Memory support",
-  //       "Pill organizer"
-  //     ],
-  //     price: "$99.99",
-  //     originalPrice: "$149.99",
-  //     savings: "Save $50",
-  //     primaryButton: "查看详情",
-  //     freeShipping: true,
-  //     return30Day: true,
-  //     expertCurated: true,
-  //     image: "/api/placeholder/300/250"
-  //   }
-  // ];
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
       setIsSearchActive(true);
       setShowHeaderSearch(true);
+
+      // 根据搜索关键词调用 API
+      getProducts(20, 0, searchQuery)
+        .then((productsResp:any) => {
+          setGoldenThreeProducts(productsResp);
+        })
+        .catch(error => {
+          console.error('Failed to search products:', error);
+        });
+
       // 缩短动画时间，让滚动更快开始
       setTimeout(() => {
         goldenThreeRef.current?.scrollIntoView({
@@ -213,7 +107,7 @@ const AmorHomepage = () => {
         } else {
           // 如果HeroSection在视野中
           setShowHeaderSearch(false);
-          setIsSearchActive(false);
+          if (isSearchActive) setIsSearchActive(false);
         }
       }
     };
@@ -223,7 +117,21 @@ const AmorHomepage = () => {
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isSearchActive]);
+  }, [isSearchActive, searchQuery]);
+
+  // 监听搜索关键词变化，清空时恢复默认产品
+  useEffect(() => {
+    // 只有在搜索激活状态下，且搜索框被清空时，才恢复默认产品
+    if (isSearchActive && !searchQuery.trim()) {
+      getProducts(3)
+        .then((productsResp: any) => {
+          setGoldenThreeProducts(productsResp);
+        })
+        .catch(error => {
+          console.error('Failed to load default products:', error);
+        });
+    }
+  }, [searchQuery]);
 
   return (
     <Dialog.Root open={showVoiceDialog} onOpenChange={setShowVoiceDialog}>

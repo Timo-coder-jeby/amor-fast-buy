@@ -36,7 +36,7 @@ class RequestService {
     this.instance.interceptors.response.use(
       ({config,data}:any) => {
         getGlobalLoadingManager().hideLoading();
-        return config?.check ? (data?.data || data) : data;
+        return config?.check ? (data?.data?.records || data?.data || data) : data;
       },
       (error) => {
         getGlobalLoadingManager().hideLoading();
