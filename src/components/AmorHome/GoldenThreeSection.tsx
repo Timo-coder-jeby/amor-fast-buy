@@ -1,52 +1,7 @@
 import { Star, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Product } from "@types";
 
-interface Product {
-  id: number;
-  productId: string;
-  parentProductId: string | null;
-  title: string;
-  brand: string;
-  sellerId: string;
-  sellerName: string;
-  platform: string;
-  productUrl: string;
-  status: string;
-  mainImageUrl: string;
-  imageUrls: string | null;
-  productDescription: string;
-  sellingPoints: string;
-  specifications: string;
-  quickBuyUrl: string;
-  currentPrice: number;
-  originalPrice: number;
-  currency: string;
-  discountPercentage: string;
-  discountAmount: number;
-  unitPrice: string;
-  rating: number;
-  reviewsCount: number;
-  answeredQuestions: number;
-  bestSellersRank: number;
-  categoryRank: number;
-  categoryName: string;
-  matchPercentage: number;
-  recommendationReason: string;
-  availability: string;
-  stockQuantity: number;
-  shipsFrom: string;
-  primeEligible: boolean;
-  returnPolicy: string;
-  categories: string;
-  rootCategory: string;
-  subcategory: string;
-  productType: string;
-  targetAudience: string;
-  badges: string;
-  promotionTags: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface GoldenThreeSectionProps {
   products: Product[];

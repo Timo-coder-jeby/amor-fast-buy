@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@service": path.resolve(__dirname, "./src/service/index"),
+      "@types": path.resolve(__dirname, "./src/types/index"),
       "@apis": path.resolve(__dirname, "./src/service/apis/*"),
       "@components": path.resolve(__dirname, "./src/components"),
       "@assets": path.resolve(__dirname, "./src/assets"),
