@@ -16,7 +16,8 @@ import { getTopSellingProducts, getGiftBoxes } from "@/service/api";
 const AmorHomepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showVoiceDialog, setShowVoiceDialog] = useState(false);
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false); // 标记是否执行了搜索
+  const [showHeaderSearch, setShowHeaderSearch] = useState(false); // 控制 Header 搜索栏显示
   const goldenThreeRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +71,8 @@ const AmorHomepage = () => {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      setIsSearchActive(true);
+      setIsSearchActive(true); // 标记已执行搜索
+      setShowHeaderSearch(true); // 显示 Header 搜索栏
 
       // 根据搜索关键词调用 API
       getProducts(20, 0, searchQuery)
@@ -91,34 +93,31 @@ const AmorHomepage = () => {
     }
   };
 
-  // 监听滚动事件
+  // 监听滚动事件 - 仅用于控制 Header 搜索栏的显示，不触发接口请求
   useEffect(() => {
     const handleScroll = () => {
       if (heroSectionRef.current) {
         const heroBottom = heroSectionRef.current.getBoundingClientRect().bottom;
-        // 如果HeroSection已经滚动出视野（底部在视口顶部以上）
+
+        // 根据滚动位置控制 Header 搜索栏显示/隐藏
         if (heroBottom <= 100) {
-          if (!isSearchActive) {
-            setIsSearchActive(true);
-          }
+          setShowHeaderSearch(true);
         } else {
-          // 如果HeroSection在视野中
-          if (isSearchActive) setIsSearchActive(false);
+          setShowHeaderSearch(false);
         }
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    // 初始检查
-    handleScroll();
-
+    handleScroll(); // 初始检查
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isSearchActive, searchQuery]);
+  }, []);
 
   // 监听搜索关键词变化，清空时恢复默认产品
   useEffect(() => {
     // 只有在搜索激活状态下，且搜索框被清空时，才恢复默认产品
     if (isSearchActive && !searchQuery.trim()) {
+      setIsSearchActive(false); // 重置搜索状态，恢复显示 Golden Three
       getProducts(3)
         .then((productsResp: any) => {
           setGoldenThreeProducts(productsResp);
@@ -136,7 +135,7 @@ const AmorHomepage = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           onSearch={handleSearch}
-          showSearch={isSearchActive}
+          showSearch={showHeaderSearch}
         />
 
         <div ref={heroSectionRef}>
