@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Dialog } from "radix-ui";
-import Header from "@/components/AmorHome/Header";
-import HeroSection from "@/components/AmorHome/HeroSection";
-import GoldenThreeSection from "@/components/AmorHome/GoldenThreeSection";
-import SectionDivider from "@/components/AmorHome/SectionDivider";
-import HolidayGiftBoxes from "@/components/AmorHome/HolidayGiftBoxes";
-import CommunitySection from "@/components/AmorHome/CommunitySection";
-import Footer from "@/components/AmorHome/Footer";
-import ChatWidget from "@/components/AmorHome/ChatWidget";
-import VoiceDialog from "@/components/AmorHome/VoiceDialog";
+import Header from "@components/AmorHome/Header";
+import HeroSection from "@components/AmorHome/HeroSection";
+import GoldenThreeSection from "@components/AmorHome/GoldenThreeSection";
+import SectionDivider from "@components/AmorHome/SectionDivider";
+import HolidayGiftBoxes from "@components/AmorHome/HolidayGiftBoxes";
+import CommunitySection from "@components/AmorHome/CommunitySection";
+import Footer from "@components/AmorHome/Footer";
+import ChatWidget from "@components/AmorHome/ChatWidget";
+import VoiceDialog from "@components/AmorHome/VoiceDialog";
 
 
 import { getTopSellingProducts, getGiftBoxes } from "@/service/api";
@@ -17,7 +17,6 @@ const AmorHomepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showVoiceDialog, setShowVoiceDialog] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [showHeaderSearch, setShowHeaderSearch] = useState(false);
   const goldenThreeRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLDivElement>(null);
 
@@ -72,7 +71,6 @@ const AmorHomepage = () => {
   const handleSearch = () => {
     if (searchQuery.trim()) {
       setIsSearchActive(true);
-      setShowHeaderSearch(true);
 
       // 根据搜索关键词调用 API
       getProducts(20, 0, searchQuery)
@@ -100,13 +98,11 @@ const AmorHomepage = () => {
         const heroBottom = heroSectionRef.current.getBoundingClientRect().bottom;
         // 如果HeroSection已经滚动出视野（底部在视口顶部以上）
         if (heroBottom <= 100) {
-          setShowHeaderSearch(true);
           if (!isSearchActive) {
             setIsSearchActive(true);
           }
         } else {
           // 如果HeroSection在视野中
-          setShowHeaderSearch(false);
           if (isSearchActive) setIsSearchActive(false);
         }
       }
@@ -131,7 +127,7 @@ const AmorHomepage = () => {
           console.error('Failed to load default products:', error);
         });
     }
-  }, [searchQuery]);
+  }, [searchQuery, isSearchActive]);
 
   return (
     <Dialog.Root open={showVoiceDialog} onOpenChange={setShowVoiceDialog}>
@@ -140,7 +136,7 @@ const AmorHomepage = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           onSearch={handleSearch}
-          showSearch={showHeaderSearch}
+          showSearch={isSearchActive}
         />
 
         <div ref={heroSectionRef}>
@@ -154,7 +150,10 @@ const AmorHomepage = () => {
         </div>
 
         <div ref={goldenThreeRef}>
-          <GoldenThreeSection products={goldenThreeProducts} />
+          <GoldenThreeSection
+            products={goldenThreeProducts}
+            isSearchResult={isSearchActive}
+          />
         </div>
 
         <SectionDivider />
