@@ -12,9 +12,8 @@ export default defineConfig(({ mode }) => ({
       '/api': {
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
-        target: 'http://192.168.100.39:8081',
-        // target: 'http://172.31.9.192:16070',
-        // target: 'http://172.31.9.192:16070',
+        // target: 'http://192.168.100.39:8081',
+        target: 'http://18.166.177.4:8080',
       },
     }
   },
