@@ -1,4 +1,4 @@
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ShieldPlus } from "lucide-react";
 import { Accordion } from "radix-ui";
 
 interface SeniorFeaturesProps {
@@ -13,7 +13,7 @@ const SeniorFeatures = ({ features }: SeniorFeaturesProps) => {
           <Accordion.Item value="features">
             <Accordion.Trigger className="text-lg font-semibold text-gray-900 flex items-center justify-between w-full py-2 hover:text-pink-600 transition-colors [&[data-state=open]>svg]:rotate-180">
               <div className="flex items-center gap-2">
-                <span className="text-blue-500">👥</span>
+                <ShieldPlus className="w-5 h-5 text-black" />
                 Senior-Friendly Features
               </div>
               <svg className="h-4 w-4 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">

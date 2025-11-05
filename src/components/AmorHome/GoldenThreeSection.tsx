@@ -10,7 +10,7 @@ interface GoldenThreeSectionProps {
 const GoldenThreeSection = ({ products }: GoldenThreeSectionProps) => {
   const navigate = useNavigate();
 
-  const handleProductClick = (productId: number) => {
+  const handleProductClick = (productId: string) => {
     navigate(`/detail/${productId}`);
   };
 
@@ -56,7 +56,7 @@ const GoldenThreeSection = ({ products }: GoldenThreeSectionProps) => {
               <div
                 key={product.id}
                 className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 hover:shadow-xl cursor-pointer"
-                onClick={() => handleProductClick(product.id)}
+                onClick={() => handleProductClick(product?.productId)}
               >
                 <div className="relative p-4 pb-2">
                   <div className="flex justify-between items-center mb-3">

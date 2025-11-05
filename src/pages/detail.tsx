@@ -11,105 +11,146 @@ import {
   ReviewHighlights,
   KeyIngredientsAndBenefits
 } from "../components/Details";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { getProductDetail } from "@/service/api";
+import type { ProductDetail } from "@types";
 
 const DetailProducts = () => {
   const { id } = useParams<{ id: string }>();
+  const [productDetail, setProductDetail] = useState<ProductDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
 
-  // 模拟商品数据 - 后续可以通过API获取
-  const productData = {
-    id: 1,
-    title: "Omega-3 Fish Oil Premium 2000mg",
-    matchRate: "96% Match",
-    rating: 4.8,
-    reviews: "2,341 reviews",
-    image: "/api/placeholder/400/400",
-    currentPrice: 22.49,
-    originalPrice: 24.99,
-    savings: 2.50,
-    lastUpdated: "3:18:19",
-    priceDisclaimer: "Price may change at checkout. Final cost is determined on the external retailer's website",
-    retailers: [
-      {
-        name: "Amazon",
-        price: 22.49,
-        status: "In Stock",
-        statusColor: "text-green-600",
-        shipping: "FREE with Prime",
-        logo: "🛒"
+  useEffect(() => {
+    if (!id) return;
+
+    setIsLoading(true);
+    getProductDetail(id)
+      .then((data: ProductDetail) => {
+        setProductDetail(data);
+      })
+      .catch((error) => {
+        console.warn("Failed to fetch product details:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [id])
+
+
+  /**
+   * 辅助函数：解析逗号分隔的字符串为数组
+   * 使用 useCallback 避免每次渲染都创建新函数
+   */
+  const parseCommaSeparatedString = useCallback((str: string | null | undefined): string[] => {
+    if (!str) return [];
+    return str.split(',').map(item => item.trim()).filter(item => item.length > 0);
+  }, []);
+
+  /**
+   * 辅助函数：获取库存状态的颜色和文本
+   * @param status
+   */
+  const getStockStatus = useCallback((status: string) => {
+    const statusMap: Record<string, { text: string; color: string }> = {
+      in_stock: { text: "In Stock", color: "text-green-600" },
+      low_stock: { text: "Low Stock", color: "text-orange-600" },
+      out_of_stock: { text: "Out of Stock", color: "text-red-600" },
+      pre_order: { text: "Pre-order", color: "text-blue-600" }
+    };
+    return statusMap[status] || { text: "Unknown", color: "text-gray-600" };
+  }, []);
+
+  /**
+   * 辅助函数：获取平台 logo
+   * @param platform
+   */
+  const getPlatformLogo = useCallback((platform: string) => {
+    const logoMap: Record<string, string> = {
+      Amazon: "🛒",
+      Walmart: "🏪",
+      eBay: "🏷️",
+      CVS: "💊"
+    };
+    return logoMap[platform] || "🛍️";
+  }, []);
+
+  /**
+   * 使用 useMemo 缓存转换后的产品数据
+   * 只在 productDetail 或相关函数变化时重新计算，避免不必要的渲染
+   */
+  const productData = useMemo(() => {
+    if (!productDetail) return null;
+
+    // 解析逗号分隔的字符串为数组
+    const mainIngredients = parseCommaSeparatedString(productDetail.mainIngredients);
+    const healthBenefits = parseCommaSeparatedString(productDetail.healthBenefits);
+    const suitableForElderly = parseCommaSeparatedString(productDetail.suitableForElderly);
+
+    // 转换 retailers 数据
+    const retailers = productDetail.priceComparisonList.map(item => {
+      const stockStatus = getStockStatus(item.stockStatus);
+      return {
+        name: item.platform,
+        price: item.currentPrice,
+        originalPrice: item.originalPrice,
+        status: stockStatus.text,
+        statusColor: stockStatus.color,
+        shipping: item.isPrime
+          ? "FREE with Prime"
+          : item.shippingFee === 0
+            ? "FREE shipping"
+            : `$${item.shippingFee} shipping`,
+        logo: getPlatformLogo(item.platform),
+        url: item.platformUrl,
+        sellerName: item.sellerName,
+        sellerRating: item.sellerRating,
+        estimatedDeliveryDays: item.estimatedDeliveryDays
+      };
+    });
+
+    // 转换评论数据为 reviewHighlights 格式
+    const positiveReviews = productDetail.reviewList
+      .filter(review => review.isPositive)
+      .map(review => ({
+        text: review.content,
+        customerCount: review.likeCount
+      }));
+
+    const negativeReviews = productDetail.reviewList
+      .filter(review => !review.isPositive)
+      .map(review => ({
+        text: review.content,
+        customerCount: review.likeCount
+      }));
+
+    return {
+      id: productDetail.id,
+      title: productDetail.title,
+      matchRate: `${productDetail.matchPercentage}% Match`,
+      rating: productDetail.rating,
+      reviews: `${productDetail.reviewsCount.toLocaleString()} reviews`,
+      image: productDetail.mainImageUrl,
+      currentPrice: productDetail.currentPrice,
+      originalPrice: productDetail.originalPrice,
+      savings: productDetail.discountAmount,
+      lastUpdated: new Date().toLocaleTimeString(),
+      priceDisclaimer: "Price may change at checkout. Final cost is determined on the external retailer's website",
+      retailers,
+      seniorFeatures: suitableForElderly,
+      recommendation: productDetail.recommendationReason,
+      reviewHighlights: {
+        positive: positiveReviews,
+        negative: negativeReviews
       },
-      {
-        name: "Walmart",
-        price: 24.99,
-        originalPrice: 5.99,
-        status: "Low Stock",
-        statusColor: "text-orange-600",
-        logo: "🏪"
-      },
-      {
-        name: "CVS",
-        price: 26.99,
-        status: "In Stock",
-        statusColor: "text-green-600",
-        shipping: "FREE on $35+",
-        logo: "💊"
-      }
-    ],
-    seniorFeatures: [
-      "Easy-to-swallow soft gel capsules",
-      "Large, clear labeling for easy reading",
-      "Third-party tested for purity",
-      "No fishy aftertaste",
-      "Recommended dosage clearly marked"
-    ],
-    recommendation: "Perfect match for your heart health goals and highly rated by seniors aged 50+",
-    reviewHighlights: {
-      positive: [
-        {
-          text: "Easy for seniors to swallow, no fishy aftertaste",
-          customerCount: 186
-        },
-        {
-          text: "Doctor recommended this specific brand",
-          customerCount: 89
-        },
-        {
-          text: "Noticed improvement in joint pain within 2 weeks",
-          customerCount: 134
-        }
-      ],
-      negative: [
-        {
-          text: "Capsules are a bit large for some people",
-          customerCount: 23
-        }
-      ]
-    },
-    keyIngredients: [
-      {
-        name: "EPA (1200mg)",
+      keyIngredients: mainIngredients.map((ingredient: string) => ({
+        name: ingredient,
         verified: true
-      },
-      {
-        name: "DHA (800mg)",
-        verified: true
-      },
-      {
-        name: "Vitamin E",
-        verified: true
-      },
-      {
-        name: "Natural Lemon Flavor",
-        verified: true
-      }
-    ],
-    healthBenefits: [
-      "Supports Heart Health",
-      "Promotes Brain Function",
-      "Reduces Joint Inflammation",
-      "Improves Cholesterol Levels"
-    ]
-  };
+      })),
+      healthBenefits
+    };
+  }, [productDetail, parseCommaSeparatedString, getStockStatus, getPlatformLogo]);
 
   const handleBackToSearch = () => {
     navigate(-1);
@@ -119,48 +160,91 @@ const DetailProducts = () => {
     console.log(`Buy from ${retailer} for $${price}`);
   };
 
+  // Loading 状态
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 无数据状态
+  if (!productData) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <BackButton onClick={handleBackToSearch} />
+        <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Product does not exist</h2>
+          <p className="text-gray-600 mb-8">Sorry, the product information was not found</p>
+          <button
+            onClick={handleBackToSearch}
+            className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Back to Search
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header with Back Button */}
-      <BackButton onClick={handleBackToSearch} />
+      {
+        /**
+         * Header with Back Button
+         */
+        <BackButton onClick={handleBackToSearch} />
+      }
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Left Column - Product Image */}
-          <div className="space-y-6">
-            <ProductImage productData={productData} />
-            <SeniorFeatures features={productData.seniorFeatures} />
+      {
+        /**
+         * Main Content
+         */
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Left Column - Product Image */}
+            <div className="space-y-6">
+              <ProductImage productData={productData} />
+              <SeniorFeatures features={productData.seniorFeatures} />
+            </div>
+
+            {/* Right Column - Product Details */}
+            <div className="space-y-6">
+              <ProductTitle productData={productData} />
+              <LivePriceInfo productData={productData} />
+              <PriceComparison
+                retailers={productData.retailers}
+                productTitle={productData.title}
+                onBuyNow={handleBuyNow}
+              />
+              <Recommendation recommendation={productData.recommendation} />
+              <MainBuyButton
+                currentPrice={productData.currentPrice}
+                retailers={productData.retailers}
+                productTitle={productData.title}
+                onBuyNow={handleBuyNow}
+              />
+            </div>
           </div>
 
-          {/* Right Column - Product Details */}
-          <div className="space-y-6">
-            <ProductTitle productData={productData} />
-            <LivePriceInfo productData={productData} />
-            <PriceComparison
-              retailers={productData.retailers}
-              productTitle={productData.title}
-              onBuyNow={handleBuyNow}
+          {/* Full Width Review Highlights Section */}
+          {productData.reviewHighlights.positive.length > 0 || productData.reviewHighlights.negative.length > 0 ? (
+            <ReviewHighlights reviewHighlights={productData.reviewHighlights} />
+          ) : null}
+
+          {/* Key Ingredients and Health Benefits Section */}
+          {productData.keyIngredients.length > 0 || productData.healthBenefits.length > 0 ? (
+            <KeyIngredientsAndBenefits
+              keyIngredients={productData.keyIngredients}
+              healthBenefits={productData.healthBenefits}
             />
-            <Recommendation recommendation={productData.recommendation} />
-            <MainBuyButton
-              currentPrice={productData.currentPrice}
-              retailers={productData.retailers}
-              productTitle={productData.title}
-              onBuyNow={handleBuyNow}
-            />
-          </div>
+          ) : null}
         </div>
-
-        {/* Full Width Review Highlights Section */}
-        <ReviewHighlights reviewHighlights={productData.reviewHighlights} />
-
-        {/* Key Ingredients and Health Benefits Section */}
-        <KeyIngredientsAndBenefits
-          keyIngredients={productData.keyIngredients}
-          healthBenefits={productData.healthBenefits}
-        />
-      </div>
+      }
     </div>
   );
 };
