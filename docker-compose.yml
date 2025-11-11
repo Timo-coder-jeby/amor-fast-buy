@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: amor-fast-buy:latest
+    container_name: amor-fast-buy
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # 如需配置环境变量
+    # environment:
+    #   - NODE_ENV=production
+    #   - API_URL=http://18.166.177.4:8080
+
+    # 如需挂载自定义 nginx 配置
+    # volumes:
+    #   - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# 如果需要网络隔离
+# networks:
+#   amor-network:
+#     driver: bridge
+
