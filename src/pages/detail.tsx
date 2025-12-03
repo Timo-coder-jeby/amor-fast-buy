@@ -126,14 +126,14 @@ const DetailProducts = () => {
       }));
 
     return {
-      id: productDetail.id,
-      title: productDetail.title,
-      matchRate: `${productDetail.matchPercentage}% Match`,
+      id: productDetail?.id,
+      title: productDetail?.title,
+      matchRate: `${productDetail?.matchPercentage}% Match`,
       rating: productDetail.rating,
-      reviews: `${productDetail.reviewsCount.toLocaleString()} reviews`,
-      image: productDetail.mainImageUrl,
-      currentPrice: productDetail.currentPrice,
-      originalPrice: productDetail.originalPrice,
+      reviews: `${productDetail?.reviewsCount?.toLocaleString()} reviews`,
+      image: productDetail?.mainImageUrl,
+      currentPrice: productDetail?.currentPrice,
+      originalPrice: productDetail?.originalPrice,
       savings: productDetail.discountAmount,
       lastUpdated: new Date().toLocaleTimeString(),
       priceDisclaimer: "Price may change at checkout. Final cost is determined on the external retailer's website",
