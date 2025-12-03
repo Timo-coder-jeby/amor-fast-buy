@@ -94,7 +94,7 @@ const GoldenThreeSection = ({ products, isSearchResult = false }: GoldenThreeSec
               // 格式化评论数量
               const formatReviewCount = (count: number) => {
                 if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
-                return count.toString();
+                return count?.toString();
               };
 
               return (
